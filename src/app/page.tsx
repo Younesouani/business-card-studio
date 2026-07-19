@@ -8,6 +8,7 @@ export default function WeddingPortfolioWebsite() {
   const [formData, setFormData] = useState({ name: '', email: '', date: '', package: 'editorial', vision: '' });
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const portfolioItems = [
     { id: 1, title: 'The Atlas Mountain Elopement', type: 'Photography', url: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80', desc: 'Editorial bridal portraiture.' },
@@ -16,9 +17,13 @@ export default function WeddingPortfolioWebsite() {
     { id: 4, title: 'Midnight Celebrations', type: 'Photography', url: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&w=800&q=80', desc: 'Candid archival aesthetics.' },
   ];
 
-  const triggerInquirySend = async () => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage('');
+    setSubmitted(false);
+
     if (!formData.name || !formData.email || !formData.vision) {
-      alert('Please fill out all fields before submitting.');
+      setErrorMessage('Please fill out all fields before submitting.');
       return;
     }
 
@@ -43,12 +48,11 @@ export default function WeddingPortfolioWebsite() {
       if (response.ok) {
         setSubmitted(true);
         setFormData({ name: '', email: '', date: '', package: 'editorial', vision: '' });
-        setTimeout(() => setSubmitted(false), 6000);
       } else {
-        alert(`Server Error: ${data.error || 'Check Termux server window logs.'}`);
+        setErrorMessage(data.error || 'A server-side error occurred.');
       }
     } catch (err: any) {
-      alert(`Network Request Failed: ${err.message || 'Check terminal connection'}`);
+      setErrorMessage(err.message || 'Network request failed. Please check your connection.');
     } finally {
       setLoading(false);
     }
@@ -166,7 +170,7 @@ export default function WeddingPortfolioWebsite() {
             <h2 style={{ fontSize: '22px', fontWeight: 'normal', color: '#1c1917', marginTop: '4px' }}>Initiate Commission</h2>
           </div>
 
-          <div style={{ background: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e0da' }}>
+          <form onSubmit={handleSubmit} style={{ background: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e0da' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               <div>
                 <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '6px', fontWeight: '600' }}>Your Full Name</label>
@@ -191,21 +195,20 @@ export default function WeddingPortfolioWebsite() {
                 <textarea rows={4} placeholder="Location, styling cues, or timelines..." value={formData.vision} onChange={(e) => setFormData({...formData, vision: e.target.value})} style={{ width: '100%', padding: '12px', background: '#fbfaf8', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', resize: 'none', boxSizing: 'border-box', color: '#1c1917' }} />
               </div>
 
-              <button 
-                type="button" 
-                onClick={triggerInquirySend}
+              <button
+                type="submit"
                 disabled={loading}
-                style={{ 
-                  width: '100%', 
-                  cursor: loading ? 'not-allowed' : 'pointer', 
-                  padding: '14px', 
-                  backgroundColor: '#1c1917', 
-                  color: '#ffffff', 
-                  border: 'none', 
-                  borderRadius: '4px', 
-                  fontSize: '12px', 
-                  fontWeight: 'bold', 
-                  textTransform: 'uppercase', 
+                style={{
+                  width: '100%',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  padding: '14px',
+                  backgroundColor: '#1c1917',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
                   letterSpacing: '1px',
                   opacity: loading ? 0.6 : 1
                 }}
@@ -213,32 +216,38 @@ export default function WeddingPortfolioWebsite() {
                 {loading ? 'Sending Request...' : 'Securely Request Allocation'}
               </button>
 
+              {errorMessage && (
+                <div style={{ backgroundColor: '#fef2f2', color: '#991b1b', border: '1px solid #fca5a5', padding: '12px', borderRadius: '4px', fontSize: '13px', textAlign: 'center' }}>
+                  {errorMessage}
+                </div>
+              )}
+
               {submitted && (
                 <div style={{ backgroundColor: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '12px', borderRadius: '4px', fontSize: '13px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
                   <CheckCircle style={{ width: '16px', height: '16px', color: '#166534' }} /> Transmission Encrypted. Your date request is pending validation!
                 </div>
               )}
             </div>
+          </form>
 
-            <div style={{ position: 'relative', margin: '24px 0 12px 0', textAlign: 'center' }}>
-              <span style={{ fontSize: '10px', textTransform: 'uppercase', color: '#a8a29e', background: '#ffffff', padding: '0 8px', position: 'relative', zIndex: 2, letterSpacing: '1px' }}>
-                OR CONNECT INSTANTLY
-              </span>
-              <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', backgroundColor: '#e2e0da', zIndex: 1 }} />
-            </div>
-
-            <a
-              href="https://wa.me/+212638713194"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                width: '100%', textAlign: 'center', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', border: '1px solid #25d366', color: '#1c1917', padding: '14px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '1px'
-              }}
-            >
-              <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#25d366' }} />
-              Open Direct WhatsApp Chat
-            </a>
+          <div style={{ position: 'relative', margin: '24px 0 12px 0', textAlign: 'center' }}>
+            <span style={{ fontSize: '10px', textTransform: 'uppercase', color: '#a8a29e', background: '#ffffff', padding: '0 8px', position: 'relative', zIndex: 2, letterSpacing: '1px' }}>
+              OR CONNECT INSTANTLY
+            </span>
+            <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', backgroundColor: '#e2e0da', zIndex: 1 }} />
           </div>
+
+          <a
+            href="https://wa.me/+212638713194"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              width: '100%', textAlign: 'center', boxSizing: 'border-box', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', border: '1px solid #25d366', color: '#1c1917', padding: '14px', borderRadius: '4px', fontSize: '12px', fontWeight: 'bold', textDecoration: 'none', textTransform: 'uppercase', letterSpacing: '1px'
+            }}
+          >
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#25d366' }} />
+            Open Direct WhatsApp Chat
+          </a>
         </section>
 
       </div>
