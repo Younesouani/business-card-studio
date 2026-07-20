@@ -1,6 +1,24 @@
 'use client';
 
 import React, { useState } from 'react';
+import { 
+  Camera, 
+  Film, 
+  MapPin, 
+  Calendar, 
+  Clock, 
+  Sliders, 
+  Menu, 
+  X, 
+  ArrowRight, 
+  Compass, 
+  User, 
+  Mail, 
+  MessageSquare,
+  Sparkles,
+  Lock,
+  CheckCircle
+} from 'lucide-react';
 
 export default function PortfolioStudio() {
   const [loading, setLoading] = useState(false);
@@ -15,6 +33,7 @@ export default function PortfolioStudio() {
   });
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    // 1. Immediately halt standard HTML browser reloads across all mobile engines
     e.preventDefault();
     e.stopPropagation();
     
@@ -23,7 +42,11 @@ export default function PortfolioStudio() {
     setSubmitted(false);
 
     try {
-      const response = await fetch('/api/inquiry', {
+      // 2. Dynamically resolve the absolute domain name to bypass mobile proxy redirects
+      const baseHost = typeof window !== 'undefined' ? window.location.origin : '';
+      const targetUrl = `${baseHost}/api/inquiry`;
+      
+      const response = await fetch(targetUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -37,10 +60,10 @@ export default function PortfolioStudio() {
         setSubmitted(true);
         setFormData({ name: '', email: '', package: 'vignette', vision: '' });
       } else {
-        setErrorMessage(data.error || 'Submission failed on server.');
+        setErrorMessage(data.error || 'Submission failed on server side.');
       }
-    } catch (error) {
-      setErrorMessage('Network error. Unable to send inquiry.');
+    } catch (error: any) {
+      setErrorMessage(error?.message || 'Network error. Connection could not be established.');
     } finally {
       setLoading(false);
     }
@@ -49,6 +72,7 @@ export default function PortfolioStudio() {
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#fbfaf8', color: '#1c1917', minHeight: '100vh' }}>
       
+      {/* Header / Brand */}
       <header style={{ padding: '30px 0', borderBottom: '1px solid #e2e0da', marginBottom: '40px', textAlign: 'center' }}>
         <h1 style={{ fontSize: '26px', fontWeight: 'normal', letterSpacing: '3px', textTransform: 'uppercase', color: '#1c1917', margin: 0 }}>
           ILYA STUDIO
@@ -58,19 +82,54 @@ export default function PortfolioStudio() {
         </p>
       </header>
 
+      {/* Main Philosophy Intro */}
       <section style={{ marginBottom: '40px' }}>
         <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#44403c', fontStyle: 'italic' }}>
           Capturing high-end, editorial event coverage and luxury private visual sessions. Every frame is treated as a distinct work of art, permanently capturing authentic elegance.
         </p>
       </section>
 
+      {/* Services Portfolio Overview */}
+      <section style={{ marginBottom: '40px' }}>
+        <div style={{ marginBottom: '20px' }}>
+          <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '2px', color: '#a8a29e', fontWeight: 'bold' }}>Offerings</span>
+          <h2 style={{ fontSize: '22px', fontWeight: 'normal', color: '#1c1917', marginTop: '4px' }}>Curation Tiers</h2>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ background: '#ffffff', padding: '20px', borderRadius: '6px', border: '1px solid #e2e0da' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+              <Camera style={{ width: '18px', height: '18px', color: '#78716c' }} />
+              <h3 style={{ fontSize: '16px', margin: 0, fontWeight: 'normal' }}>The Fine-Art Vignette</h3>
+            </div>
+            <p style={{ fontSize: '13px', color: '#57534e', margin: 0, lineHeight: '1.5' }}>
+              Premium static photography asset creation. Tailored for editorial bridal portraits, private engagements, and high-fashion style profiles.
+            </p>
+          </div>
+
+          <div style={{ background: '#ffffff', padding: '20px', borderRadius: '6px', border: '1px solid #e2e0da' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
+              <Film style={{ width: '18px', height: '18px', color: '#78716c' }} />
+              <h3 style={{ fontSize: '16px', margin: 0, fontWeight: 'normal' }}>The Complete Wedding Story</h3>
+            </div>
+            <p style={{ fontSize: '13px', color: '#57534e', margin: 0, lineHeight: '1.5' }}>
+              Comprehensive dynamic media logging. Full hybrid cinematic filming paired with editorial capture layouts covering your timeline end-to-end.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Secure Booking Inquiry Hub */}
       <section id="reserve" style={{ padding: '20px 0', borderTop: '1px solid #e2e0da', marginBottom: '40px' }}>
         <div style={{ marginBottom: '24px' }}>
           <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '2px', color: '#a8a29e', fontWeight: 'bold' }}>Booking Hub</span>
           <h2 style={{ fontSize: '22px', fontWeight: 'normal', color: '#1c1917', marginTop: '4px' }}>Initiate Commission</h2>
         </div>
 
-        <form onSubmit={handleFormSubmit} style={{ background: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e0da' }}>
+        <form 
+          onSubmit={handleFormSubmit} 
+          style={{ background: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e0da' }}
+        >
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             
             <div>
@@ -122,6 +181,10 @@ export default function PortfolioStudio() {
             <button
               type="submit"
               disabled={loading}
+              onClick={(e) => {
+                // Secondary fallback intercept step to prevent mobile button tracking bugs
+                if(loading) e.preventDefault();
+              }}
               style={{
                 width: '100%',
                 cursor: loading ? 'not-allowed' : 'pointer',
@@ -147,14 +210,15 @@ export default function PortfolioStudio() {
             )}
 
             {submitted && (
-              <div style={{ backgroundColor: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '12px', borderRadius: '4px', fontSize: '13px', textAlign: 'center' }}>
-                Transmission Encrypted. Your date request is pending validation!
+              <div style={{ backgroundColor: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '12px', borderRadius: '4px', fontSize: '13px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                <CheckCircle style={{ width: '16px', height: '16px', color: '#166534' }} /> Transmission Encrypted. Your date request is pending validation!
               </div>
             )}
           </div>
         </form>
       </section>
 
+      {/* Minimal Footer */}
       <footer style={{ textAlign: 'center', padding: '20px 0', borderTop: '1px solid #e2e0da', color: '#a8a29e', fontSize: '11px', letterSpacing: '1px' }}>
         © {new Date().getFullYear()} ILYA STUDIO. All Rights Reserved.
       </footer>
