@@ -4,20 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { 
   Camera, 
   Film, 
-  MapPin, 
-  Calendar, 
-  Clock, 
-  Sliders, 
-  Menu, 
-  X, 
   ArrowRight, 
-  Compass, 
-  User, 
-  Mail, 
-  MessageSquare,
   Sparkles,
   Lock,
-  CheckCircle
+  CheckCircle,
+  Menu,
+  X
 } from 'lucide-react';
 
 export default function PortfolioStudio() {
@@ -34,7 +26,6 @@ export default function PortfolioStudio() {
     vision: ''
   });
 
-  // Catch any silent client-side execution/hydration faults visually
   useEffect(() => {
     const handleGlobalError = (event: ErrorEvent) => {
       setRuntimeCrash(`Hydration/Runtime Error: ${event.message}`);
@@ -43,7 +34,6 @@ export default function PortfolioStudio() {
     return () => window.removeEventListener('error', handleGlobalError);
   }, []);
 
-  // Formless pure client fetch execution execution
   const executeSubmission = async () => {
     if (!formData.name || !formData.email || !formData.vision) {
       setErrorMessage('Please fill out all required fields.');
@@ -84,113 +74,88 @@ export default function PortfolioStudio() {
   return (
     <div style={{ backgroundColor: '#fbfaf8', color: '#1c1917', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       
-      {/* Global Client Hydration Guard Status Indicator */}
       {runtimeCrash && (
         <div style={{ background: '#7f1d1d', color: '#fef2f2', padding: '16px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, fontSize: '12px', wordBreak: 'break-all', fontFamily: 'monospace', borderBottom: '2px solid #ef4444' }}>
           ⚠️ CRITICAL CLIENT CRASH IN BUNDLE:<br/>{runtimeCrash}
         </div>
       )}
 
-      {/* Luxury Navigation Header */}
+      {/* Navigation Header */}
       <nav style={{ borderBottom: '1px solid #e2e0da', backgroundColor: 'rgba(251, 250, 248, 0.8)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 50 }}>
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'between' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           
-          {/* Brand Identity */}
           <div style={{ flex: 1 }}>
             <span style={{ fontSize: '20px', fontWeight: 'normal', letterSpacing: '4px', textTransform: 'uppercase', color: '#1c1917' }}>
               ILYA STUDIO
             </span>
           </div>
 
-          {/* Desktop Navigation Links */}
-          <div style={{ display: 'none', md: 'flex', alignItems: 'center', gap: '32px' }}>
-            <a href="#philosophy" style={{ textDecoration: 'none', color: '#44403c', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', transition: 'color 0.2s' }}>Philosophy</a>
-            <a href="#curation" style={{ textDecoration: 'none', color: '#44403c', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', transition: 'color 0.2s' }}>Offerings</a>
+          {/* Cleaned: Removed invalid md: prefix fields */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+            <a href="#philosophy" style={{ textDecoration: 'none', color: '#44403c', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px' }}>Philosophy</a>
+            <a href="#curation" style={{ textDecoration: 'none', color: '#44403c', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px' }}>Offerings</a>
             <a href="#reserve" style={{ textDecoration: 'none', backgroundColor: '#1c1917', color: '#ffffff', padding: '10px 20px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold', borderRadius: '2px' }}>Book Commission</a>
           </div>
-
-          {/* Mobile Menu Toggle Interceptor Button */}
-          <button 
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
-            style={{ display: 'block', md: 'none', background: 'none', border: 'none', cursor: 'pointer', color: '#1c1917' }}
-          >
-            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
-
-        {/* Mobile Dropdown Panel Menu Options */}
-        {mobileMenuOpen && (
-          <div style={{ display: 'block', md: 'none', borderTop: '1px solid #e2e0da', backgroundColor: '#fbfaf8', padding: '24px', position: 'absolute', width: '100%', left: 0, boxSizing: 'border-box' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-              <a href="#philosophy" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1c1917', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>Philosophy</a>
-              <a href="#curation" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1c1917', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>Offerings</a>
-              <a href="#reserve" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', backgroundColor: '#1c1917', color: '#ffffff', textAlign: 'center', padding: '14px', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Book Commission</a>
-            </div>
-          </div>
-        )}
       </nav>
 
-      {/* Hero Content Section Layout */}
+      {/* Hero Header Section */}
       <header id="philosophy" style={{ maxWidth: '1200px', margin: '0 auto', padding: '80px 24px 60px 24px', textAlign: 'center' }}>
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#eec', padding: '6px 14px', borderRadius: '30px', marginBottom: '24px', border: '1px solid #e2e0da' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#f2f0ea', padding: '6px 14px', borderRadius: '30px', marginBottom: '24px', border: '1px solid #e2e0da' }}>
           <Sparkles size={14} style={{ color: '#78716c' }} />
           <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '2px', color: '#44403c', fontWeight: '600' }}>Available Internationally</span>
         </div>
-        <h1 style={{ fontSize: 'clamp(32px, 6vw, 56px)', fontWeight: 'normal', letterSpacing: '-1px', lineHeight: '1.1', color: '#1c1917', maxWidth: '800px', margin: '0 auto 24px auto' }}>
+        <h1 style={{ fontSize: '38px', fontWeight: 'normal', letterSpacing: '-1px', lineHeight: '1.2', color: '#1c1917', maxWidth: '800px', margin: '0 auto 24px auto' }}>
           Fine-Art Visual Curation & Editorial Storytelling
         </h1>
-        <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: '1.6', color: '#57534e', maxWidth: '600px', margin: '0 auto', fontStyle: 'italic' }}>
+        <p style={{ fontSize: '16px', lineHeight: '1.6', color: '#57534e', maxWidth: '600px', margin: '0 auto', fontStyle: 'italic' }}>
           Capturing high-end, luxury event coverage and private visual sessions. Every single frame is handled as a distinct work of fine art, permanently capturing authentic elegance.
         </p>
       </header>
 
-      {/* Services Portfolio Tiers Block Grid */}
+      {/* Services Portfolio Tiers Block */}
       <section id="curation" style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px 60px 24px' }}>
         <div style={{ textAlign: 'center', marginBottom: '48px' }}>
           <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '3px', color: '#a8a29e', fontWeight: 'bold' }}>Curation Packages</span>
           <h2 style={{ fontSize: '28px', fontWeight: 'normal', color: '#1c1917', marginTop: '6px' }}>Available Tiers</h2>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           
           {/* Tier Option 1 */}
-          <div style={{ background: '#ffffff', padding: '40px 32px', borderRadius: '4px', border: '1px solid #e2e0da', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-                <div style={{ background: '#fbfaf8', padding: '12px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
-                  <Camera style={{ width: '24px', height: '24px', color: '#44403c' }} />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '18px', margin: 0, fontWeight: 'normal', color: '#1c1917' }}>The Fine-Art Vignette</h3>
-                  <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#78716c', letterSpacing: '1px' }}>Static Curation</span>
-                </div>
+          <div style={{ background: '#ffffff', padding: '40px 32px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+              <div style={{ background: '#fbfaf8', padding: '12px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
+                <Camera style={{ width: '24px', height: '24px', color: '#44403c' }} />
               </div>
-              <p style={{ fontSize: '14px', color: '#57534e', lineHeight: '1.6', marginBottom: '24px' }}>
-                Premium static asset logging configuration. Explicitly tailored for editorial bridal portraits, destination couple engagements, and premium fashion style layout logs.
-              </p>
+              <div>
+                <h3 style={{ fontSize: '18px', margin: 0, fontWeight: 'normal', color: '#1c1917' }}>The Fine-Art Vignette</h3>
+                <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#78716c', letterSpacing: '1px' }}>Static Curation</span>
+              </div>
             </div>
-            <a href="#reserve" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', color: '#1c1917', marginTop: '20px' }}>
+            <p style={{ fontSize: '14px', color: '#57534e', lineHeight: '1.6', marginBottom: '24px' }}>
+              Premium static asset logging configuration. Explicitly tailored for editorial bridal portraits, destination couple engagements, and premium fashion style layout logs.
+            </p>
+            <a href="#reserve" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', color: '#1c1917' }}>
               Select Layout Framework <ArrowRight size={14} />
             </a>
           </div>
 
           {/* Tier Option 2 */}
-          <div style={{ background: '#ffffff', padding: '40px 32px', borderRadius: '4px', border: '1px solid #e2e0da', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-                <div style={{ background: '#fbfaf8', padding: '12px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
-                  <Film style={{ width: '24px', height: '24px', color: '#44403c' }} />
-                </div>
-                <div>
-                  <h3 style={{ fontSize: '18px', margin: 0, fontWeight: 'normal', color: '#1c1917' }}>The Complete Wedding Story</h3>
-                  <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#78716c', letterSpacing: '1px' }}>Hybrid Cinematic</span>
-                </div>
+          <div style={{ background: '#ffffff', padding: '40px 32px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+              <div style={{ background: '#fbfaf8', padding: '12px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
+                <Film style={{ width: '24px', height: '24px', color: '#44403c' }} />
               </div>
-              <p style={{ fontSize: '14px', color: '#57534e', lineHeight: '1.6', marginBottom: '24px' }}>
-                Comprehensive multi-lens media management configuration. Immersive hybrid filmmaking paired with high-end editorial photo spreads chronicling your timeline end-to-end.
-              </p>
+              <div>
+                <h3 style={{ fontSize: '18px', margin: 0, fontWeight: 'normal', color: '#1c1917' }}>The Complete Wedding Story</h3>
+                <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#78716c', letterSpacing: '1px' }}>Hybrid Cinematic</span>
+              </div>
             </div>
-            <a href="#reserve" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', color: '#1c1917', marginTop: '20px' }}>
+            <p style={{ fontSize: '14px', color: '#57534e', lineHeight: '1.6', marginBottom: '24px' }}>
+              Comprehensive multi-lens media management configuration. Immersive hybrid filmmaking paired with high-end editorial photo spreads chronicling your timeline end-to-end.
+            </p>
+            <a href="#reserve" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', color: '#1c1917' }}>
               Select Layout Framework <ArrowRight size={14} />
             </a>
           </div>
@@ -211,7 +176,6 @@ export default function PortfolioStudio() {
             <p style={{ fontSize: '14px', color: '#6b6661', marginTop: '8px' }}>Provide your timeline coordination constraints to reserve allocation privileges.</p>
           </div>
 
-          {/* Formless <div> Block Base to completely nullify Mobile Browser GET overrides */}
           <div style={{ background: '#fbfaf8', padding: '32px', borderRadius: '6px', border: '1px solid #e2e0da' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               
@@ -242,7 +206,7 @@ export default function PortfolioStudio() {
                 <select 
                   value={formData.package} 
                   onChange={(e) => setFormData({...formData, package: e.target.value})} 
-                  style={{ width: '100%', padding: '14px', background: '#ffffff', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917', appearance: 'none', WebkitAppearance: 'none' }}
+                  style={{ width: '100%', padding: '14px', background: '#ffffff', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917' }}
                 >
                   <option value="vignette">The Fine-Art Vignette (Photo Only)</option>
                   <option value="editorial">The Complete Wedding Story (Hybrid Cinematic)</option>
@@ -300,9 +264,10 @@ export default function PortfolioStudio() {
         </div>
       </section>
 
-      {/* Editorial Footer Layer */}
       <footer style={{ borderTop: '1px solid #e2e0da', textAlign: 'center', padding: '40px 24px', color: '#a8a29e', fontSize: '11px', letterSpacing: '2px', backgroundColor: '#fbfaf8' }}>
-        © {new Date().getFullYear()} ILYA STUDIO. ALL RIGHTS RESERVED.
+
+
+        © {new Date().getFullYear()} ILYA STUDIO. ALL RIGHTS RESERVED...
       </footer>
 
     </div>
