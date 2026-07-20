@@ -25,6 +25,7 @@ export default function PortfolioStudio() {
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [runtimeCrash, setRuntimeCrash] = useState('');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -33,7 +34,7 @@ export default function PortfolioStudio() {
     vision: ''
   });
 
-  // Intercept any silent client-side execution/hydration faults
+  // Catch any silent client-side execution/hydration faults visually
   useEffect(() => {
     const handleGlobalError = (event: ErrorEvent) => {
       setRuntimeCrash(`Hydration/Runtime Error: ${event.message}`);
@@ -42,17 +43,18 @@ export default function PortfolioStudio() {
     return () => window.removeEventListener('error', handleGlobalError);
   }, []);
 
-  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // Aggressively restrict standard HTML form reloads instantly
-    e.preventDefault();
-    e.stopPropagation();
-    
+  // Formless pure client fetch execution execution
+  const executeSubmission = async () => {
+    if (!formData.name || !formData.email || !formData.vision) {
+      setErrorMessage('Please fill out all required fields.');
+      return;
+    }
+
     setLoading(true);
     setErrorMessage('');
     setSubmitted(false);
 
     try {
-      // Build absolute route target matching your updated api schema
       const baseHost = typeof window !== 'undefined' ? window.location.origin : '';
       const targetUrl = `${baseHost}/api/inquiry`;
       
@@ -80,163 +82,227 @@ export default function PortfolioStudio() {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#fbfaf8', color: '#1c1917', minHeight: '100vh' }}>
+    <div style={{ backgroundColor: '#fbfaf8', color: '#1c1917', minHeight: '100vh', fontFamily: 'sans-serif' }}>
       
-      {/* Hydration Debug Alert Banner */}
+      {/* Global Client Hydration Guard Status Indicator */}
       {runtimeCrash && (
-        <div style={{ background: '#7f1d1d', color: '#fef2f2', padding: '16px', borderRadius: '6px', marginBottom: '20px', fontSize: '12px', wordBreak: 'break-all', fontFamily: 'monospace', border: '2px solid #ef4444' }}>
+        <div style={{ background: '#7f1d1d', color: '#fef2f2', padding: '16px', position: 'fixed', top: 0, left: 0, right: 0, zIndex: 9999, fontSize: '12px', wordBreak: 'break-all', fontFamily: 'monospace', borderBottom: '2px solid #ef4444' }}>
           ⚠️ CRITICAL CLIENT CRASH IN BUNDLE:<br/>{runtimeCrash}
         </div>
       )}
 
-      {/* Header / Brand */}
-      <header style={{ padding: '30px 0', borderBottom: '1px solid #e2e0da', marginBottom: '40px', textAlign: 'center' }}>
-        <h1 style={{ fontSize: '26px', fontWeight: 'normal', letterSpacing: '3px', textTransform: 'uppercase', color: '#1c1917', margin: 0 }}>
-          ILYA STUDIO
+      {/* Luxury Navigation Header */}
+      <nav style={{ borderBottom: '1px solid #e2e0da', backgroundColor: 'rgba(251, 250, 248, 0.8)', backdropFilter: 'blur(8px)', position: 'sticky', top: 0, zIndex: 50 }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', height: '80px', display: 'flex', alignItems: 'center', justifyContent: 'between' }}>
+          
+          {/* Brand Identity */}
+          <div style={{ flex: 1 }}>
+            <span style={{ fontSize: '20px', fontWeight: 'normal', letterSpacing: '4px', textTransform: 'uppercase', color: '#1c1917' }}>
+              ILYA STUDIO
+            </span>
+          </div>
+
+          {/* Desktop Navigation Links */}
+          <div style={{ display: 'none', md: 'flex', alignItems: 'center', gap: '32px' }}>
+            <a href="#philosophy" style={{ textDecoration: 'none', color: '#44403c', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', transition: 'color 0.2s' }}>Philosophy</a>
+            <a href="#curation" style={{ textDecoration: 'none', color: '#44403c', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', transition: 'color 0.2s' }}>Offerings</a>
+            <a href="#reserve" style={{ textDecoration: 'none', backgroundColor: '#1c1917', color: '#ffffff', padding: '10px 20px', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold', borderRadius: '2px' }}>Book Commission</a>
+          </div>
+
+          {/* Mobile Menu Toggle Interceptor Button */}
+          <button 
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)} 
+            style={{ display: 'block', md: 'none', background: 'none', border: 'none', cursor: 'pointer', color: '#1c1917' }}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+
+        {/* Mobile Dropdown Panel Menu Options */}
+        {mobileMenuOpen && (
+          <div style={{ display: 'block', md: 'none', borderTop: '1px solid #e2e0da', backgroundColor: '#fbfaf8', padding: '24px', position: 'absolute', width: '100%', left: 0, boxSizing: 'border-box' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              <a href="#philosophy" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1c1917', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>Philosophy</a>
+              <a href="#curation" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', color: '#1c1917', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '2px' }}>Offerings</a>
+              <a href="#reserve" onClick={() => setMobileMenuOpen(false)} style={{ textDecoration: 'none', backgroundColor: '#1c1917', color: '#ffffff', textAlign: 'center', padding: '14px', fontSize: '12px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 'bold' }}>Book Commission</a>
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Content Section Layout */}
+      <header id="philosophy" style={{ maxWidth: '1200px', margin: '0 auto', padding: '80px 24px 60px 24px', textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', backgroundColor: '#eec', padding: '6px 14px', borderRadius: '30px', marginBottom: '24px', border: '1px solid #e2e0da' }}>
+          <Sparkles size={14} style={{ color: '#78716c' }} />
+          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '2px', color: '#44403c', fontWeight: '600' }}>Available Internationally</span>
+        </div>
+        <h1 style={{ fontSize: 'clamp(32px, 6vw, 56px)', fontWeight: 'normal', letterSpacing: '-1px', lineHeight: '1.1', color: '#1c1917', maxWidth: '800px', margin: '0 auto 24px auto' }}>
+          Fine-Art Visual Curation & Editorial Storytelling
         </h1>
-        <p style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', color: '#78716c', marginTop: '8px' }}>
-          Fine-Art Visual Curation & Storytelling
+        <p style={{ fontSize: 'clamp(15px, 2vw, 18px)', lineHeight: '1.6', color: '#57534e', maxWidth: '600px', margin: '0 auto', fontStyle: 'italic' }}>
+          Capturing high-end, luxury event coverage and private visual sessions. Every single frame is handled as a distinct work of fine art, permanently capturing authentic elegance.
         </p>
       </header>
 
-      {/* Main Philosophy Intro */}
-      <section style={{ marginBottom: '40px' }}>
-        <p style={{ fontSize: '15px', lineHeight: '1.6', color: '#44403c', fontStyle: 'italic' }}>
-          Capturing high-end, editorial event coverage and luxury private visual sessions. Every frame is treated as a distinct work of art, permanently capturing authentic elegance.
-        </p>
-      </section>
-
-      {/* Services Portfolio Overview */}
-      <section style={{ marginBottom: '40px' }}>
-        <div style={{ marginBottom: '20px' }}>
-          <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '2px', color: '#a8a29e', fontWeight: 'bold' }}>Offerings</span>
-          <h2 style={{ fontSize: '22px', fontWeight: 'normal', color: '#1c1917', marginTop: '4px' }}>Curation Tiers</h2>
+      {/* Services Portfolio Tiers Block Grid */}
+      <section id="curation" style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 24px 60px 24px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '48px' }}>
+          <span style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '3px', color: '#a8a29e', fontWeight: 'bold' }}>Curation Packages</span>
+          <h2 style={{ fontSize: '28px', fontWeight: 'normal', color: '#1c1917', marginTop: '6px' }}>Available Tiers</h2>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-          <div style={{ background: '#ffffff', padding: '20px', borderRadius: '6px', border: '1px solid #e2e0da' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <Camera style={{ width: '18px', height: '18px', color: '#78716c' }} />
-              <h3 style={{ fontSize: '16px', margin: 0, fontWeight: 'normal' }}>The Fine-Art Vignette</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '32px' }}>
+          
+          {/* Tier Option 1 */}
+          <div style={{ background: '#ffffff', padding: '40px 32px', borderRadius: '4px', border: '1px solid #e2e0da', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <div style={{ background: '#fbfaf8', padding: '12px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
+                  <Camera style={{ width: '24px', height: '24px', color: '#44403c' }} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', margin: 0, fontWeight: 'normal', color: '#1c1917' }}>The Fine-Art Vignette</h3>
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#78716c', letterSpacing: '1px' }}>Static Curation</span>
+                </div>
+              </div>
+              <p style={{ fontSize: '14px', color: '#57534e', lineHeight: '1.6', marginBottom: '24px' }}>
+                Premium static asset logging configuration. Explicitly tailored for editorial bridal portraits, destination couple engagements, and premium fashion style layout logs.
+              </p>
             </div>
-            <p style={{ fontSize: '13px', color: '#57534e', margin: 0, lineHeight: '1.5' }}>
-              Premium static photography asset creation. Tailored for editorial bridal portraits, private engagements, and high-fashion style profiles.
-            </p>
+            <a href="#reserve" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', color: '#1c1917', marginTop: '20px' }}>
+              Select Layout Framework <ArrowRight size={14} />
+            </a>
           </div>
 
-          <div style={{ background: '#ffffff', padding: '20px', borderRadius: '6px', border: '1px solid #e2e0da' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-              <Film style={{ width: '18px', height: '18px', color: '#78716c' }} />
-              <h3 style={{ fontSize: '16px', margin: 0, fontWeight: 'normal' }}>The Complete Wedding Story</h3>
+          {/* Tier Option 2 */}
+          <div style={{ background: '#ffffff', padding: '40px 32px', borderRadius: '4px', border: '1px solid #e2e0da', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+            <div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                <div style={{ background: '#fbfaf8', padding: '12px', borderRadius: '4px', border: '1px solid #e2e0da' }}>
+                  <Film style={{ width: '24px', height: '24px', color: '#44403c' }} />
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', margin: 0, fontWeight: 'normal', color: '#1c1917' }}>The Complete Wedding Story</h3>
+                  <span style={{ fontSize: '11px', textTransform: 'uppercase', color: '#78716c', letterSpacing: '1px' }}>Hybrid Cinematic</span>
+                </div>
+              </div>
+              <p style={{ fontSize: '14px', color: '#57534e', lineHeight: '1.6', marginBottom: '24px' }}>
+                Comprehensive multi-lens media management configuration. Immersive hybrid filmmaking paired with high-end editorial photo spreads chronicling your timeline end-to-end.
+              </p>
             </div>
-            <p style={{ fontSize: '13px', color: '#57534e', margin: 0, lineHeight: '1.5' }}>
-              Comprehensive dynamic media logging. Full hybrid cinematic filming paired with editorial capture layouts covering your timeline end-to-end.
-            </p>
+            <a href="#reserve" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', color: '#1c1917', marginTop: '20px' }}>
+              Select Layout Framework <ArrowRight size={14} />
+            </a>
           </div>
+
         </div>
       </section>
 
-      {/* Secure Booking Inquiry Hub */}
-      <section id="reserve" style={{ padding: '20px 0', borderTop: '1px solid #e2e0da', marginBottom: '40px' }}>
-        <div style={{ marginBottom: '24px' }}>
-          <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '2px', color: '#a8a29e', fontWeight: 'bold' }}>Booking Hub</span>
-          <h2 style={{ fontSize: '22px', fontWeight: 'normal', color: '#1c1917', marginTop: '4px' }}>Initiate Commission</h2>
-        </div>
-
-        <form 
-          onSubmit={handleFormSubmit} 
-          style={{ background: '#ffffff', padding: '24px', borderRadius: '8px', border: '1px solid #e2e0da' }}
-        >
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            
-            <div>
-              <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '6px', fontWeight: '600' }}>Your Full Name</label>
-              <input 
-                type="text" 
-                required 
-                value={formData.name} 
-                onChange={(e) => setFormData({...formData, name: e.target.value})} 
-                style={{ width: '100%', padding: '12px', background: '#fbfaf8', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917' }} 
-              />
+      {/* Formless Secure Inquiry Module Hub */}
+      <section id="reserve" style={{ borderTop: '1px solid #e2e0da', backgroundColor: '#ffffff', padding: '80px 24px' }}>
+        <div style={{ maxWidth: '650px', margin: '0 auto' }}>
+          
+          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', backgroundColor: '#fbfaf8', padding: '6px 12px', borderRadius: '4px', border: '1px solid #e2e0da', marginBottom: '12px' }}>
+              <Lock size={12} style={{ color: '#16a34a' }} />
+              <span style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '1px', color: '#166534', fontWeight: 'bold' }}>Resend Verified Transmission Pipeline</span>
             </div>
+            <h2 style={{ fontSize: '32px', fontWeight: 'normal', color: '#1c1917', margin: 0 }}>Initiate Commission</h2>
+            <p style={{ fontSize: '14px', color: '#6b6661', marginTop: '8px' }}>Provide your timeline coordination constraints to reserve allocation privileges.</p>
+          </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '6px', fontWeight: '600' }}>Email Address</label>
-              <input 
-                type="email" 
-                required 
-                value={formData.email} 
-                onChange={(e) => setFormData({...formData, email: e.target.value})} 
-                style={{ width: '100%', padding: '12px', background: '#fbfaf8', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917' }} 
-              />
-            </div>
+          {/* Formless <div> Block Base to completely nullify Mobile Browser GET overrides */}
+          <div style={{ background: '#fbfaf8', padding: '32px', borderRadius: '6px', border: '1px solid #e2e0da' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+              
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '8px', fontWeight: '600' }}>Your Full Name</label>
+                <input 
+                  type="text" 
+                  placeholder="E.g., Alexander Mercer"
+                  value={formData.name} 
+                  onChange={(e) => setFormData({...formData, name: e.target.value})} 
+                  style={{ width: '100%', padding: '14px', background: '#ffffff', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917' }} 
+                />
+              </div>
 
-            <div>
-              <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '6px', fontWeight: '600' }}>Desired Curation Package</label>
-              <select 
-                value={formData.package} 
-                onChange={(e) => setFormData({...formData, package: e.target.value})} 
-                style={{ width: '100%', padding: '12px', background: '#fbfaf8', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917' }}
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '8px', fontWeight: '600' }}>Email Address</label>
+                <input 
+                  type="email" 
+                  placeholder="name@domain.com"
+                  value={formData.email} 
+                  onChange={(e) => setFormData({...formData, email: e.target.value})} 
+                  style={{ width: '100%', padding: '14px', background: '#ffffff', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917' }} 
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '8px', fontWeight: '600' }}>Desired Curation Package</label>
+                <select 
+                  value={formData.package} 
+                  onChange={(e) => setFormData({...formData, package: e.target.value})} 
+                  style={{ width: '100%', padding: '14px', background: '#ffffff', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', boxSizing: 'border-box', color: '#1c1917', appearance: 'none', WebkitAppearance: 'none' }}
+                >
+                  <option value="vignette">The Fine-Art Vignette (Photo Only)</option>
+                  <option value="editorial">The Complete Wedding Story (Hybrid Cinematic)</option>
+                </select>
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '8px', fontWeight: '600' }}>Tell Me About Your Creative Vision</label>
+                <textarea 
+                  rows={5} 
+                  placeholder="Specify location dynamics, aesthetic direction preferences, scheduling profiles..." 
+                  value={formData.vision} 
+                  onChange={(e) => setFormData({...formData, vision: e.target.value})} 
+                  style={{ width: '100%', padding: '14px', background: '#ffffff', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', resize: 'none', boxSizing: 'border-box', color: '#1c1917', lineHeight: '1.5' }} 
+                />
+              </div>
+
+              <button
+                type="button"
+                disabled={loading}
+                onClick={executeSubmission}
+                style={{
+                  width: '100%',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  padding: '16px',
+                  backgroundColor: '#1c1917',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '4px',
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  textTransform: 'uppercase',
+                  letterSpacing: '2px',
+                  opacity: loading ? 0.6 : 1,
+                  transition: 'background-color 0.2s, opacity 0.2s',
+                  marginTop: '10px'
+                }}
               >
-                <option value="vignette">The Fine-Art Vignette (Photo Only)</option>
-                <option value="editorial">The Complete Wedding Story (Hybrid Cinematic)</option>
-              </select>
+                {loading ? 'Transmitting Request...' : 'Securely Request Allocation'}
+              </button>
+
+              {errorMessage && (
+                <div style={{ backgroundColor: '#fef2f2', color: '#991b1b', border: '1px solid #fca5a5', padding: '14px', borderRadius: '4px', fontSize: '13px', textAlign: 'center', lineHeight: '1.4' }}>
+                  {errorMessage}
+                </div>
+              )}
+
+              {submitted && (
+                <div style={{ backgroundColor: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '16px', borderRadius: '4px', fontSize: '13px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', lineHeight: '1.4' }}>
+                  <CheckCircle style={{ width: '18px', height: '18px', color: '#166534', flexShrink: 0 }} /> Transmission Encrypted. Your date request is pending validation!
+                </div>
+              )}
             </div>
-
-            <div>
-              <label style={{ display: 'block', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#78716c', marginBottom: '6px', fontWeight: '600' }}>Tell Me About Your Vision</label>
-              <textarea 
-                rows={4} 
-                required 
-                placeholder="Location, styling cues, or timelines..." 
-                value={formData.vision} 
-                onChange={(e) => setFormData({...formData, vision: e.target.value})} 
-                style={{ width: '100%', padding: '12px', background: '#fbfaf8', border: '1px solid #e2e0da', borderRadius: '4px', fontSize: '14px', resize: 'none', boxSizing: 'border-box', color: '#1c1917' }} 
-              />
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              onClick={(e) => {
-                if(loading) e.preventDefault();
-              }}
-              style={{
-                width: '100%',
-                cursor: loading ? 'not-allowed' : 'pointer',
-                padding: '14px',
-                backgroundColor: '#1c1917',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '4px',
-                fontSize: '12px',
-                fontWeight: 'bold',
-                textTransform: 'uppercase',
-                letterSpacing: '1px',
-                opacity: loading ? 0.6 : 1
-              }}
-            >
-              {loading ? 'Sending Request...' : 'Securely Request Allocation'}
-            </button>
-
-            {errorMessage && (
-              <div style={{ backgroundColor: '#fef2f2', color: '#991b1b', border: '1px solid #fca5a5', padding: '12px', borderRadius: '4px', fontSize: '13px', textAlign: 'center' }}>
-                {errorMessage}
-              </div>
-            )}
-
-            {submitted && (
-              <div style={{ backgroundColor: '#f0fdf4', color: '#166534', border: '1px solid #bbf7d0', padding: '12px', borderRadius: '4px', fontSize: '13px', textAlign: 'center', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-                <CheckCircle style={{ width: '16px', height: '16px', color: '#166534' }} /> Transmission Encrypted. Your date request is pending validation!
-              </div>
-            )}
           </div>
-        </form>
+        </div>
       </section>
 
-      {/* Minimal Footer */}
-      <footer style={{ textAlign: 'center', padding: '20px 0', borderTop: '1px solid #e2e0da', color: '#a8a29e', fontSize: '11px', letterSpacing: '1px' }}>
-        © {new Date().getFullYear()} ILYA STUDIO. All Rights Reserved.
+      {/* Editorial Footer Layer */}
+      <footer style={{ borderTop: '1px solid #e2e0da', textAlign: 'center', padding: '40px 24px', color: '#a8a29e', fontSize: '11px', letterSpacing: '2px', backgroundColor: '#fbfaf8' }}>
+        © {new Date().getFullYear()} ILYA STUDIO. ALL RIGHTS RESERVED.
       </footer>
 
     </div>
