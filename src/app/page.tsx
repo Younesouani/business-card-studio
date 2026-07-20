@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Camera, 
   Film, 
@@ -24,6 +24,7 @@ export default function PortfolioStudio() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [runtimeCrash, setRuntimeCrash] = useState('');
   
   const [formData, setFormData] = useState({
     name: '',
@@ -32,8 +33,17 @@ export default function PortfolioStudio() {
     vision: ''
   });
 
+  // Intercept any silent client-side execution/hydration faults
+  useEffect(() => {
+    const handleGlobalError = (event: ErrorEvent) => {
+      setRuntimeCrash(`Hydration/Runtime Error: ${event.message}`);
+    };
+    window.addEventListener('error', handleGlobalError);
+    return () => window.removeEventListener('error', handleGlobalError);
+  }, []);
+
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    // 1. Immediately halt standard HTML browser reloads across all mobile engines
+    // Aggressively restrict standard HTML form reloads instantly
     e.preventDefault();
     e.stopPropagation();
     
@@ -42,7 +52,7 @@ export default function PortfolioStudio() {
     setSubmitted(false);
 
     try {
-      // 2. Dynamically resolve the absolute domain name to bypass mobile proxy redirects
+      // Build absolute route target matching your updated api schema
       const baseHost = typeof window !== 'undefined' ? window.location.origin : '';
       const targetUrl = `${baseHost}/api/inquiry`;
       
@@ -72,6 +82,13 @@ export default function PortfolioStudio() {
   return (
     <div style={{ maxWidth: '600px', margin: '0 auto', padding: '20px', fontFamily: 'sans-serif', backgroundColor: '#fbfaf8', color: '#1c1917', minHeight: '100vh' }}>
       
+      {/* Hydration Debug Alert Banner */}
+      {runtimeCrash && (
+        <div style={{ background: '#7f1d1d', color: '#fef2f2', padding: '16px', borderRadius: '6px', marginBottom: '20px', fontSize: '12px', wordBreak: 'break-all', fontFamily: 'monospace', border: '2px solid #ef4444' }}>
+          ⚠️ CRITICAL CLIENT CRASH IN BUNDLE:<br/>{runtimeCrash}
+        </div>
+      )}
+
       {/* Header / Brand */}
       <header style={{ padding: '30px 0', borderBottom: '1px solid #e2e0da', marginBottom: '40px', textAlign: 'center' }}>
         <h1 style={{ fontSize: '26px', fontWeight: 'normal', letterSpacing: '3px', textTransform: 'uppercase', color: '#1c1917', margin: 0 }}>
@@ -182,7 +199,6 @@ export default function PortfolioStudio() {
               type="submit"
               disabled={loading}
               onClick={(e) => {
-                // Secondary fallback intercept step to prevent mobile button tracking bugs
                 if(loading) e.preventDefault();
               }}
               style={{
